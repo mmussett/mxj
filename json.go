@@ -12,6 +12,22 @@ import (
 	"time"
 )
 
+func (msv MapSeq) Json(safeEncoding ...bool) ([]byte, error) {
+	var s bool
+	if len(safeEncoding) == 1 {
+		s = safeEncoding[0]
+	}
+
+	b, err := json.Marshal(msv)
+
+	if !s {
+		b = bytes.Replace(b, []byte("\\u003c"), []byte("<"), -1)
+		b = bytes.Replace(b, []byte("\\u003e"), []byte(">"), -1)
+		b = bytes.Replace(b, []byte("\\u0026"), []byte("&"), -1)
+	}
+	return b, err
+}
+
 // ------------------------------ write JSON -----------------------
 
 // Just a wrapper on json.Marshal.
